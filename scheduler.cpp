@@ -103,8 +103,7 @@ void scheduler::SJF(std::vector <process> processes){
         
         std::sort(activeprocesses.begin(), activeprocesses.end(), compduration);
 
-        process p = activeprocesses[0];
-        std::cout <<"id: "<< p.id <<"\n"; 
+        process p = activeprocesses[0]; 
         activeprocesses.erase(activeprocesses.begin());
 
         sumresponsetime += (executiontime - p.starttime);
