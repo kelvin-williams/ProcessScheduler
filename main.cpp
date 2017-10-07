@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include "process.hpp"
 #include "scheduler.hpp"
 
@@ -32,19 +33,20 @@ std::vector <process> GetProcessesFromFile(const char * str){
 
 int main(){
 
-    int a = 245;
-    int b = a + 1000;
+    std::cout << std::fixed << std::setprecision(1);
 
-    std::vector <process> processes = GetProcessesFromFile("input.txt");
+    std::vector <process> processes = GetProcessesFromFile("input2.txt");
 
     for(int i = 0; i < processes.size(); i++)
     std::cout << processes[i].starttime << " " << processes[i].duration<< "\n";
 
 
-    scheduler sc;
+    scheduler fcfs, sjf;
 
-    sc.FCFS(processes);
+    fcfs.FCFS(processes);
+    sjf.SJF(processes);
 
-    std::cout << "FCFS: " << sc.meanreturntime <<" "<< sc.meanresponsetime <<" "<< sc.meanwaittime<<"\n";
-    return b + 1;
+    std::cout << "FCFS: " << fcfs.meanreturntime <<" "<< fcfs.meanresponsetime <<" "<< fcfs.meanwaittime<<"\n";
+    std::cout << "SJF: " << sjf.meanreturntime <<" "<< sjf.meanresponsetime <<" "<< sjf.meanwaittime<<"\n";
+    return 0;
 }
