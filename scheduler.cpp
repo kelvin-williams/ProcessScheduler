@@ -73,6 +73,7 @@ void scheduler::SJF(std::vector <process> processes){
         if(processes[i].starttime == 0){
             activeprocesses.push_back(processes[i]);
             processes.erase(processes.begin()+i);
+            i--;
         }
     }
 
@@ -116,6 +117,97 @@ void scheduler::SJF(std::vector <process> processes){
 
     }
 
+    this->meanresponsetime =((float)sumresponsetime) / ((float)vecsize);
+    this->meanreturntime = ((float)sumreturntime) / ((float)vecsize);
+    this->meanwaittime = ((float)sumwaittime) / ((float)vecsize);
+}
+
+void scheduler::RR(std::vector <process> processes){
+
+    int sumresponsetime = 0;
+    int sumwaittime = 0;
+    int sumreturntime = 0;
+    int executiontime = 0;
+    const int vecsize = processes.size();
+    std::vector <process> activeprocesses;
+
+    std::sort(processes.begin(), processes.end(), compstart);
+
+    for(int i = 0; i < processes.size(); i++){
+        if(processes[i].starttime == 0){
+            activeprocesses.push_back(processes[i]);
+            processes.erase(processes.begin()+i);
+            i--;
+        }
+    }
+
+    while(activeprocesses.size() > 0 || processes.size() > 0){
+
+        if(activeprocesses.size() == 0 && processes.size() > 0){//Se não tem nenhum ativo (espaço ocioso)
+                                                                // mas ainda tem processos restantes
+            int minstarttime = INT_MAX;
+
+            for(int j = 0; j < processes.size(); j++){//Procura o menor tempo de início dos processos ainda não inseridos
+
+                if(processes[j].starttime < minstarttime)
+                    minstarttime = processes[j].starttime;
+            }
+
+            if(minstarttime > executiontime)//E avança o "tempo" para o mesmo
+                executiontime = minstarttime;
+        }
+
+        for(int i = 0; i < processes.size(); i++){
+            if(processes[i].starttime <= executiontime){
+                activeprocesses.push_back(processes[i]);
+                processes.erase(processes.begin()+i);
+                i--;
+            }
+        }
+        
+        
+
+        process p = activeprocesses[0];
+        activeprocesses.erase(activeprocesses.begin());
+
+        if(p.processedtime == 0){
+            sumresponsetime += (executiontime - p.starttime);
+        }
+
+        if((p.duration - p.processedtime) < quantum ){
+            
+            p.processedtime += (p.duration - p.processedtime);
+            executiontime += (p.duration - p.processedtime);
+
+
+        }else{
+            
+            p.processedtime += quantum;
+            executiontime += quantum;
+
+        }
+
+        if(p.processedtime == p.duration){//Se o processo terminou
+            
+            sumreturntime += executiontime - p.starttime;
+            sumwaittime += executiontime - p.starttime - p.duration;
+
+
+        }else{
+            
+            for(int i = 0; i < processes.size(); i++){
+                if(processes[i].starttime <= executiontime){
+                    activeprocesses.push_back(processes[i]);
+                    processes.erase(processes.begin()+i);
+                    i--;
+                }
+            }
+            
+            activeprocesses.push_back(p);
+        }
+
+        
+    }
     this->meanresponsetime =((float)sumresponsetime) / ((float)vecsize);
     this->meanreturntime = ((float)sumreturntime) / ((float)vecsize);
     this->meanwaittime = ((float)sumwaittime) / ((float)vecsize);

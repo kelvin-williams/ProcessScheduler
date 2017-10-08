@@ -35,18 +35,20 @@ int main(){
 
     std::cout << std::fixed << std::setprecision(1);
 
-    std::vector <process> processes = GetProcessesFromFile("input2.txt");
+    std::vector <process> processes = GetProcessesFromFile("input.txt");
 
     for(int i = 0; i < processes.size(); i++)
     std::cout << processes[i].starttime << " " << processes[i].duration<< "\n";
 
 
-    scheduler fcfs, sjf;
+    scheduler fcfs, sjf, rr;
 
     fcfs.FCFS(processes);
     sjf.SJF(processes);
+    rr.RR(processes);
 
     std::cout << "FCFS: " << fcfs.meanreturntime <<" "<< fcfs.meanresponsetime <<" "<< fcfs.meanwaittime<<"\n";
     std::cout << "SJF: " << sjf.meanreturntime <<" "<< sjf.meanresponsetime <<" "<< sjf.meanwaittime<<"\n";
+    std::cout << "RR: " << rr.meanreturntime <<" "<< rr.meanresponsetime <<" "<< rr.meanwaittime<<"\n";
     return 0;
 }
