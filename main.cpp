@@ -51,7 +51,7 @@ int main(){
 
     std::cout << std::fixed << std::setprecision(1);
 
-    std::vector <process> processes = GetProcessesFromFile("input2.txt");
+    std::vector <process> processes = GetProcessesFromFile("input.txt");
 
    // for(int i = 0; i < processes.size(); i++)
    // std::cout << processes[i].starttime << " " << processes[i].duration<< "\n";
