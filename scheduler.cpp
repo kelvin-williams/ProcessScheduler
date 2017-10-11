@@ -133,28 +133,12 @@ void scheduler::RR(std::vector <process> processes){
 
     std::sort(processes.begin(), processes.end(), compstart);
 
-    for(int i = 0; i < processes.size(); i++){
-        if(processes[i].starttime == 0){
-            activeprocesses.push_back(processes[i]);
-            processes.erase(processes.begin()+i);
-            i--;
-        }
-    }
 
     while(activeprocesses.size() > 0 || processes.size() > 0){
 
         if(activeprocesses.size() == 0 && processes.size() > 0){//Se não tem nenhum ativo (espaço ocioso)
                                                                 // mas ainda tem processos restantes
-            int minstarttime = INT_MAX;
-
-            for(int j = 0; j < processes.size(); j++){//Procura o menor tempo de início dos processos ainda não inseridos
-
-                if(processes[j].starttime < minstarttime)
-                    minstarttime = processes[j].starttime;
-            }
-
-            if(minstarttime > executiontime)//E avança o "tempo" para o mesmo
-                executiontime = minstarttime;
+            executiontime = processes[0].starttime;
         }
 
         for(int i = 0; i < processes.size(); i++){
@@ -169,6 +153,7 @@ void scheduler::RR(std::vector <process> processes){
 
         process p = activeprocesses[0];
         activeprocesses.erase(activeprocesses.begin());
+        
 
         if(p.processedtime == 0){
             sumresponsetime += (executiontime - p.starttime);
@@ -176,8 +161,9 @@ void scheduler::RR(std::vector <process> processes){
 
         if((p.duration - p.processedtime) < quantum ){
             
-            p.processedtime += (p.duration - p.processedtime);
             executiontime += (p.duration - p.processedtime);
+            p.processedtime += (p.duration - p.processedtime);
+            
 
 
         }else{
